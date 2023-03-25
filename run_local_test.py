@@ -45,6 +45,7 @@ import tensorflow as tf
 import time
 import shutil # for deleting a whole directory
 import webbrowser
+import argparse
 from multiprocessing import Process
 
 logging.basicConfig(
@@ -148,24 +149,43 @@ if __name__ == '__main__':
                                      'AutoDL_sample_code_submission')
   default_time_budget = 1200
 
-  tf.flags.DEFINE_string('dataset_dir', default_dataset_dir,
-                        "Directory containing the content (e.g. adult.data/ + "
-                        "adult.solution) of an AutoDL dataset. Specify this "
-                        "argument if you want to test on a different dataset.")
+#   tf.flags.DEFINE_string('dataset_dir', default_dataset_dir,
+#                         "Directory containing the content (e.g. adult.data/ + "
+#                         "adult.solution) of an AutoDL dataset. Specify this "
+#                         "argument if you want to test on a different dataset.")
 
-  tf.flags.DEFINE_string('code_dir', default_code_dir,
-                        "Directory containing a `model.py` file. Specify this "
-                        "argument if you want to test on a different algorithm."
-                        )
+#   tf.flags.DEFINE_string('code_dir', default_code_dir,
+#                         "Directory containing a `model.py` file. Specify this "
+#                         "argument if you want to test on a different algorithm."
+#                         )
 
-  tf.flags.DEFINE_float('time_budget', default_time_budget,
-                        "Time budget for running ingestion " +
-                        "(training + prediction)."
-                        )
+#   tf.flags.DEFINE_float('time_budget', default_time_budget,
+#                         "Time budget for running ingestion " +
+#                         "(training + prediction)."
+#                         )
 
-  FLAGS = tf.flags.FLAGS
-  dataset_dir = FLAGS.dataset_dir
-  code_dir = FLAGS.code_dir
-  time_budget = FLAGS.time_budget
+
+
+#   FLAGS = tf.flags.FLAGS
+#   dataset_dir = FLAGS.dataset_dir
+#   code_dir = FLAGS.code_dir
+#   time_budget = FLAGS.time_budget
+
+  parser = argparse.ArgumentParser(description='Testing script for AutoDL challenge')
+  parser.add_argument('--dataset_dir', type=str, default=default_dataset_dir,
+                help='Directory containing the content (e.g. adult.data/ + '
+                     'adult.solution) of an AutoDL dataset. Specify this '
+                     'argument if you want to test on a different dataset.')
+  parser.add_argument('--code_dir', type=str, default=default_code_dir,
+                help='Directory containing a `model.py` file. Specify this '
+                     'argument if you want to test on a different algorithm.')
+  parser.add_argument('--time_budget', type=float, default=default_time_budget,
+                help='Time budget for running ingestion (training + prediction).')
+
+  args = parser.parse_args()
+
+  dataset_dir = args.dataset_dir
+  code_dir = args.code_dir
+  time_budget = args.time_budget
 
   run_baseline(dataset_dir, code_dir, time_budget)

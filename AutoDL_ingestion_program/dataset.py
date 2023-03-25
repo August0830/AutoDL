@@ -20,15 +20,12 @@ import os
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
-from tensorflow import app
-from tensorflow import flags
-from tensorflow import gfile
-from tensorflow import logging
+import tensorflow as tf
+from tensorflow.compat.v1 import gfile
 from google.protobuf import text_format
 import dataset_utils
 from data_pb2 import DataSpecification
 from data_pb2 import MatrixSpec
-
 
 def metadata_filename(dataset_name):
   return os.path.join("", dataset_name, "metadata.textproto")
@@ -154,26 +151,26 @@ class AutoDLDataset(object):
     for i in range(self.metadata_.get_bundle_size()):
       if self.metadata_.is_sparse(i):
         sequence_features[self._feature_key(
-            i, "sparse_col_index")] = tf.VarLenFeature(tf.int64)
+            i, "sparse_col_index")] = tf.io.VarLenFeature(tf.int64)
         sequence_features[self._feature_key(
-            i, "sparse_row_index")] = tf.VarLenFeature(tf.int64)
+            i, "sparse_row_index")] = tf.io.VarLenFeature(tf.int64)
         sequence_features[self._feature_key(
-            i, "sparse_channel_index")] = tf.VarLenFeature(tf.int64)
+            i, "sparse_channel_index")] = tf.io.VarLenFeature(tf.int64)
         sequence_features[self._feature_key(
-            i, "sparse_value")] = tf.VarLenFeature(tf.float32)
+            i, "sparse_value")] = tf.io.VarLenFeature(tf.float32)
       elif self.metadata_.is_compressed(i):
         sequence_features[self._feature_key(
-            i, "compressed")] = tf.VarLenFeature(tf.string)
+            i, "compressed")] = tf.io.VarLenFeature(tf.string)
       else:
         sequence_features[self._feature_key(
             i, "dense_input")] = tf.FixedLenSequenceFeature(
                 self.metadata_.get_tensor_size(i), dtype=tf.float32)
     # read TFRecord
-    contexts, features = tf.parse_single_sequence_example(
+    contexts, features = tf.io.parse_single_sequence_example(
         sequence_example_proto,
         context_features={
-            "label_index": tf.VarLenFeature(tf.int64),
-            "label_score": tf.VarLenFeature(tf.float32)
+            "label_index": tf.io.VarLenFeature(tf.int64),
+            "label_score": tf.io.VarLenFeature(tf.float32)
         },
         sequence_features=sequence_features)
 
@@ -337,4 +334,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-  app.run(main)
+  tf.compat.v1.app.run(main)

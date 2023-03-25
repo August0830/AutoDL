@@ -17,7 +17,7 @@ from skeleton.projects.others import AUC, five_crop
 torch.backends.cudnn.benchmark = True
 threads = [
     threading.Thread(target=lambda: torch.cuda.synchronize()),
-    threading.Thread(target=lambda: tf.Session())
+    threading.Thread(target=lambda: tf.compat.v1.Session())
 ]
 [t.start() for t in threads]
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -51,7 +51,7 @@ class Model(LogicModel):
         [t.join() for t in threads]
 
         self.device = torch.device('cuda', 0)
-        self.session = tf.Session()
+        self.session = tf.compat.v1.Session()
 
         Network = ResNet18
         self.model = Network(in_channels, num_class)
